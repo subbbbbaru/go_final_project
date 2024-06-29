@@ -38,21 +38,13 @@ func main() {
 
 	webDir := "web"
 
-	// http.Handle("/", http.FileServer(http.Dir(webDir)))
-
 	mux.Handle("/", http.FileServer(http.Dir(webDir)))
 	mux.HandleFunc("/api/nextdate", handlers.NextDayHandler)
 	mux.HandleFunc("/api/task", handlers.TaskHandler)
 	mux.HandleFunc("/api/tasks", handlers.GetTasksHandler)
 	mux.HandleFunc("/api/task/done", handlers.DoneTaskHandler)
 
-	//go func() {
 	if err := server.Run(config.Server.Port, mux); err != nil {
 		log.Fatalf("Error while running http server %s", err.Error())
 	}
-	//}()
-
-	// if err := server.Shutdown(context.Background()); err != nil {
-	// 	log.Fatalf("error occured on server shutting down: %s", err.Error())
-	// }
 }
