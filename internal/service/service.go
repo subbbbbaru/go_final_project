@@ -7,11 +7,11 @@ import (
 	"github.com/subbbbbaru/go_final_project/internal/repository"
 )
 
-//	type Auth interface {
-//		CreateUser(user todo.User) (int, error)
-//		GenerateToken(username, password string) (string, error)
-//		ParseToken(token string) (int, error)
-//	}
+type Auth interface {
+	// CreateUser(user todo.User) (int, error)
+	GenerateToken( /*username,*/ password string) (string, error)
+	ValideToken(token string) (bool, error)
+}
 type TodoTask interface {
 	NextDate(now time.Time, date string, repeat string) (string, error)
 	Create( /*userId int64,*/ task models.Task) (int64, error)
@@ -23,13 +23,13 @@ type TodoTask interface {
 }
 
 type Service struct {
-	// Auth
+	Auth
 	TodoTask
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		// Auth:     NewAuthService(repos.Auth),
+		Auth:     NewAuthService(repos.Auth),
 		TodoTask: NewTodoTaskService(repos.TodoTask),
 	}
 }

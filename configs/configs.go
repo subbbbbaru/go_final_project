@@ -12,10 +12,14 @@ type ServerConfig struct {
 type DBConfig struct {
 	Name string
 }
+type AuthConfig struct {
+	Password string
+}
 
 type Config struct {
-	Server ServerConfig
-	DB     DBConfig
+	Server   ServerConfig
+	DB       DBConfig
+	AuthConf AuthConfig
 }
 
 // New returns a new Config struct
@@ -26,6 +30,9 @@ func New() *Config {
 		},
 		DB: DBConfig{
 			Name: getEnv("TODO_DBFILE", "scheduler.db"),
+		},
+		AuthConf: AuthConfig{
+			Password: getEnv("TODO_PASSWORD", ""),
 		},
 	}
 }

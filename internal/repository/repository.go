@@ -8,8 +8,8 @@ import (
 )
 
 type Auth interface {
-	CreateUser(user string) (int, error)
-	GetUser(username, password string) (string, error)
+	//	CreateUser(user string) (int, error)
+	GetPassword() (string, error)
 }
 
 type TodoTask interface {
@@ -23,13 +23,13 @@ type TodoTask interface {
 }
 
 type Repository struct {
-	// Auth
+	Auth
 	TodoTask
 }
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		// Auth:     NewAuthSQLite(db),
+		Auth:     NewAuthFromEnv(),
 		TodoTask: NewTodoTaskSQLite(db), // NewTodoTaskSQLite(db),
 	}
 }

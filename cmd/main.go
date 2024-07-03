@@ -38,11 +38,17 @@ func main() {
 
 	webDir := "web"
 
+	pass, err := repos.GetPassword()
+	if err != nil {
+		log.Fatalf("[Error] %v", err)
+	}
+
 	mux.Handle("/", http.FileServer(http.Dir(webDir)))
-	mux.HandleFunc("/api/nextdate", handlers.NextDayHandler)
-	mux.HandleFunc("/api/task", handlers.TaskHandler)
-	mux.HandleFunc("/api/tasks", handlers.GetTasksHandler)
-	mux.HandleFunc("/api/task/done", handlers.DoneTaskHandler)
+	mux.HandleFunc("/api/nextdate", handlers.UserIdentity(handlers.NextDayHandler, pass))
+	mux.HandleFunc("/api/task", handlers.UserIdentity(handlers.TaskHandler, pass))
+	mux.HandleFunc("/api/tasks", handlers.UserIdentity(handlers.GetTasksHandler, pass))
+	mux.HandleFunc("/api/task/done", handlers.UserIdentity(handlers.DoneTaskHandler, pass))
+	mux.HandleFunc("/api/signin", handlers.SignIn)
 
 	if err := server.Run(config.Server.Port, mux); err != nil {
 		log.Fatalf("Error while running http server %s", err.Error())
