@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/subbbbbaru/first-sample/pkg/log"
 	"github.com/subbbbbaru/go_final_project/internal/models"
 )
 
@@ -17,6 +18,7 @@ func (h *Handler) GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 
 	tasks, err := h.services.TodoTask.GetTasks(search)
 	if err != nil {
+		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
@@ -29,6 +31,7 @@ func (h *Handler) GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
+		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return

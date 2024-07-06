@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
+
 	"net/http"
+
+	"github.com/subbbbbaru/first-sample/pkg/log"
 )
 
 type signInInput struct {
@@ -15,13 +17,14 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
+		log.Error().Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
 	}
 	token, err := h.services.Auth.GenerateToken(input.Password)
-	log.Println(token)
 	if err != nil {
+		log.Error().Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return

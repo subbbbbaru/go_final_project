@@ -22,11 +22,10 @@ type Config struct {
 	AuthConf AuthConfig
 }
 
-// New returns a new Config struct
 func New() *Config {
 	return &Config{
 		Server: ServerConfig{
-			Port: getEnvAsInt("SERVER_PORT", 7540),
+			Port: getEnvAsInt("SERVER_PORT", 7545),
 		},
 		DB: DBConfig{
 			Name: getEnv("TODO_DBFILE", "scheduler.db"),
@@ -37,7 +36,7 @@ func New() *Config {
 	}
 }
 
-// Simple helper function to read an environment or return a default value
+// Функция для чтения переменных среды или возвращает дефолтное значение
 func getEnv(key string, defaultVal string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
@@ -46,7 +45,7 @@ func getEnv(key string, defaultVal string) string {
 	return defaultVal
 }
 
-// Simple helper function to read an environment variable into integer or return a default value
+// Функция для чтения целочисленных переменных среды или возвращает дефолтное значение
 func getEnvAsInt(name string, defaultVal int) int {
 	valueStr := getEnv(name, "")
 	if value, err := strconv.Atoi(valueStr); err == nil {

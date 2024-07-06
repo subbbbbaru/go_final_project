@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/subbbbbaru/go_final_project/internal/models"
-	"github.com/subbbbbaru/go_final_project/internal/repository"
+	"github.com/subbbbbaru/go_final_project/utils"
 )
 
 func (h *Handler) PutTaskHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +32,7 @@ func (h *Handler) PutTaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	timeNow := time.Now().Truncate(24 * time.Hour).UTC()
+	timeNow := time.Now() //.Truncate(24 * time.Hour).UTC()
 
 	if task.Date == "" {
 		task.Date = timeNow.Format("20060102")
@@ -45,12 +45,11 @@ func (h *Handler) PutTaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	repos := repository.NewRepository(nil)
 	if date.Before(timeNow) {
 		if task.Repeat == "" {
 			task.Date = timeNow.Format("20060102")
 		} else {
-			task.Date, err = repos.NextDate(timeNow, task.Date, task.Repeat)
+			task.Date, err = utils.NextDate(timeNow, task.Date, task.Repeat)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})

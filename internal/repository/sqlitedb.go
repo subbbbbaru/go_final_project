@@ -2,21 +2,18 @@ package repository
 
 import (
 	"database/sql"
-	"log"
+
 	"os"
 	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/subbbbbaru/first-sample/pkg/log"
 )
 
 const (
 	todoTaskTable = "scheduler"
 )
-
-// Database represents a SQLite database.
-// type Database struct {
-// 	db *sql.DB
-// }
 
 // Создание новой базы данных или подключение к существующей БД
 func NewSQLite3DB(dbName string) (*sql.DB, error) {
@@ -27,7 +24,7 @@ func NewSQLite3DB(dbName string) (*sql.DB, error) {
 		}
 	}
 
-	db, err := sql.Open("sqlite3", dbName)
+	db, err := openDB(dbName)
 	if err != nil {
 		return nil, err
 	}
@@ -36,15 +33,31 @@ func NewSQLite3DB(dbName string) (*sql.DB, error) {
 	}
 	return db, nil // &Database{db: db}, nil
 }
+func openDB(dbName string) (*sql.DB, error) {
+	log.Info().Println("Open database file")
+	appPath, err := os.Executable()
+	if err != nil {
+		return nil, err
+	}
+
+	dbFile := filepath.Join(filepath.Dir(appPath), "db", dbName)
+
+	db, err := sql.Open("sqlite3", dbFile)
+	if err != nil {
+		return nil, err
+	}
+	return db, err
+}
 
 // Создание файла базы данных
 func createDB(dbName string) error {
-	log.Println("Create database file")
+	log.Info().Println("Create database file")
 	appPath, err := os.Executable()
 	if err != nil {
 		return err
 	}
-	dbFile := filepath.Join(filepath.Dir(appPath), dbName)
+
+	dbFile := filepath.Join(filepath.Dir(appPath), "db", dbName)
 
 	_, err = os.Create(dbFile)
 	if err != nil {
@@ -55,25 +68,23 @@ func createDB(dbName string) error {
 
 // Проверка существования файла базы данных
 func checkDB(dbName string) bool {
-	log.Println("Check exist database file")
+	log.Info().Println("Check exist database file")
 	appPath, err := os.Executable()
 	if err != nil {
-		log.Fatal(err)
-	}
-	dbFile := filepath.Join(filepath.Dir(appPath), dbName)
-	_, err = os.Stat(dbFile)
-	if os.IsNotExist(err) {
-		log.Println("Database file not exist")
+		log.Error().Fatal(err)
 		return false
 	}
-	log.Println("Database file exist")
+
+	dbFile := filepath.Join(filepath.Dir(appPath), "db", dbName)
+
+	_, err = os.Stat(dbFile)
+	if os.IsNotExist(err) {
+		log.Error().Println("Database file not exist")
+		return false
+	}
+	log.Error().Println("Database file exist")
 	return true
 }
-
-// // Close closes the database connection.
-// func (db *Database) Close() error {
-// 	return db.db.Close()
-// }
 
 // createTable создает таблицу `scheduler` в базе данных
 func createTable(db *sql.DB) error {

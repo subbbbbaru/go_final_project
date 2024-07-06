@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/subbbbbaru/go_final_project/internal/repository"
+	"github.com/subbbbbaru/first-sample/pkg/log"
+	"github.com/subbbbbaru/go_final_project/utils"
 )
 
 func (h *Handler) NextDayHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,14 +16,14 @@ func (h *Handler) NextDayHandler(w http.ResponseWriter, r *http.Request) {
 
 	now, err := time.Parse("20060102", nowParam)
 	if err != nil {
+		log.Error().Println(err)
 		http.Error(w, fmt.Sprintf(`invalid "now" parameter: %s`, err.Error()), http.StatusBadRequest)
 		return
 	}
 
-	repos := repository.NewRepository(nil)
-
-	nextDate, err := repos.NextDate(now, taskParam, repeatParam)
+	nextDate, err := utils.NextDate(now, taskParam, repeatParam)
 	if err != nil {
+		log.Error().Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -13,5 +13,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/subbbbbaru/first-sample v0.0.0-20240626210128-ffc1f5a910b0
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

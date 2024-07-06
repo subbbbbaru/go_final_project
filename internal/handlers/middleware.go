@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/subbbbbaru/first-sample/pkg/log"
 )
 
 func (h *Handler) UserIdentity(next http.HandlerFunc, password string) http.HandlerFunc {
@@ -12,18 +13,19 @@ func (h *Handler) UserIdentity(next http.HandlerFunc, password string) http.Hand
 				cookie, err := r.Cookie("token")
 				if err != nil {
 					http.Error(w, "Authentificate required", http.StatusUnauthorized)
-					log.Println("Authentificate required", err.Error())
+
+					log.Error().Println("Authentificate required", err.Error())
 					return
 				}
 				valid, err := h.services.Auth.ValideToken(cookie.Value)
 				if err != nil {
-					http.Error(w, "Internal server error", http.StatusInternalServerError)
-					log.Println("Internal server error", err.Error())
+					http.Error(w, "Internal server error", http.StatusUnauthorized)
+					log.Error().Println("Internal server error", err.Error())
 					return
 				}
 				if !valid {
 					http.Error(w, "Authentificate required", http.StatusUnauthorized)
-					log.Println("Authentificate required")
+					log.Error().Println("Authentificate required")
 					return
 				}
 			}
@@ -31,21 +33,3 @@ func (h *Handler) UserIdentity(next http.HandlerFunc, password string) http.Hand
 		},
 	)
 }
-
-// 	header := c.GetHeader(authHeader)
-// 	if header == "" {
-// 		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
-// 		return
-// 	}
-// 	headerParts := strings.Split(header, " ")
-// 	if len(headerParts) != 2 {
-// 		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
-// 		return
-// 	}
-
-// 	userId, err := h.services.Auth.ParseToken(headerParts[1])
-// 	if err != nil {
-// 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
-// 	}
-// 	c.Set(userCtx, userId)
-// }

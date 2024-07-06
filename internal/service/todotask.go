@@ -1,8 +1,6 @@
 package service
 
 import (
-	"time"
-
 	"github.com/subbbbbaru/go_final_project/internal/models"
 	"github.com/subbbbbaru/go_final_project/internal/repository"
 )
@@ -17,10 +15,6 @@ func NewTodoTaskService(repo repository.TodoTask) *TodoItemService {
 
 func (todoService *TodoItemService) Create(task models.Task) (int64, error) {
 	return todoService.repo.Create(task)
-}
-
-func (todoService *TodoItemService) NextDate(now time.Time, date string, repeat string) (string, error) {
-	return todoService.repo.NextDate(now, date, repeat)
 }
 
 func (todoService *TodoItemService) GetTasks(search string) ([]models.Task, error) {
