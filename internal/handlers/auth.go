@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-
 	"net/http"
 
 	"github.com/subbbbbaru/first-sample/pkg/log"
@@ -19,14 +18,18 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 	token, err := h.services.Auth.GenerateToken(input.Password)
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 	response := struct {
@@ -35,5 +38,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-type", "application-json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	if errJson := json.NewEncoder(w).Encode(response); errJson != nil {
+		log.Error().Println(errJson)
+	}
 }

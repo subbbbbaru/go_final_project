@@ -3,13 +3,9 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/subbbbbaru/go_final_project/internal/models"
-	"github.com/subbbbbaru/go_final_project/utils"
 )
 
 const (
@@ -72,19 +68,9 @@ func (todo *TodoTaskSQLite) GetTaskById(taskId int) (models.Task, error) {
 
 func (todo *TodoTaskSQLite) Update(task models.Task) (models.Task, error) {
 
-	id, err := strconv.Atoi(task.ID)
-	if err != nil {
-		return models.Task{}, err
-	}
-
-	_, err = todo.GetTaskById(id)
-	if err != nil {
-		return models.Task{}, err
-	}
-
 	query := fmt.Sprintf("UPDATE %s SET title = ?, date = ?, Comment = ?, repeat = ? WHERE id = ?", todoTaskTable)
 
-	_, err = todo.db.Exec(query, task.Title, task.Date, task.Comment, task.Repeat, task.ID)
+	_, err := todo.db.Exec(query, task.Title, task.Date, task.Comment, task.Repeat, task.ID)
 	if err != nil {
 		return models.Task{}, err
 	}
@@ -94,39 +80,14 @@ func (todo *TodoTaskSQLite) Update(task models.Task) (models.Task, error) {
 
 func (todo *TodoTaskSQLite) Delete(taskId int) (models.Task, error) {
 
-	_, err := todo.GetTaskById(taskId)
-	if err != nil {
-		return models.Task{}, err
-	}
-
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = ?", todoTaskTable)
 
-	_, err = todo.db.Exec(query, taskId)
+	_, err := todo.db.Exec(query, taskId)
 	if err != nil {
 		return models.Task{}, err
 	}
 
 	return models.Task{}, nil
-}
-
-func (todo *TodoTaskSQLite) Done(taskId int) (models.Task, error) {
-	task, err := todo.GetTaskById(taskId)
-	if err != nil {
-		return models.Task{}, err
-	}
-	if strings.TrimSpace(task.Repeat) == "" {
-		return todo.Delete(taskId)
-	}
-	now := time.Now() //.UTC().Truncate(24 * time.Hour)
-
-	nextDate, err := utils.NextDate(now, task.Date, task.Repeat)
-	if err != nil {
-		return models.Task{}, err
-	}
-
-	task.Date = nextDate
-
-	return todo.Update(task)
 }
 
 func (todo *TodoTaskSQLite) nonSearch() ([]models.Task, error) {

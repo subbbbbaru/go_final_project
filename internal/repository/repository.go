@@ -16,7 +16,6 @@ type TodoTask interface {
 	GetTaskById(taskId int) (models.Task, error)
 	Update(task models.Task) (models.Task, error)
 	Delete(taskId int) (models.Task, error)
-	Done(taskId int) (models.Task, error)
 }
 
 type Repository struct {

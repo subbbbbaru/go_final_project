@@ -13,22 +13,28 @@ func (h *Handler) GetTaskByIdHandler(w http.ResponseWriter, r *http.Request) {
 	if len(id) == 0 {
 		log.Error().Println("wrong id")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "wrong id"})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": "wrong id"}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 	taskId, err := strconv.Atoi(id)
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 
-	task, err := h.services.TodoTask.GetTaskById(taskId)
+	task, err := h.services.GetTaskById(taskId)
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 
@@ -38,7 +44,9 @@ func (h *Handler) GetTaskByIdHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 }

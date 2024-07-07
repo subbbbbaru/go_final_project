@@ -13,7 +13,6 @@ func (h *Handler) UserIdentity(next http.HandlerFunc, password string) http.Hand
 				cookie, err := r.Cookie("token")
 				if err != nil {
 					http.Error(w, "Authentificate required", http.StatusUnauthorized)
-
 					log.Error().Println("Authentificate required", err.Error())
 					return
 				}

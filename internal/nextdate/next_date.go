@@ -1,4 +1,4 @@
-package utils
+package nextdate
 
 import (
 	"errors"
@@ -183,63 +183,6 @@ func getMonth(now time.Time, date time.Time, parts ...string) (string, error) {
 		date = time.Date(date.Year()+1, 1, 1, 0, 0, 0, 0, time.UTC)
 	}
 }
-
-// func getMonth1(now time.Time, taskDate time.Time, daysOnWeek ...string) (string, error) {
-
-// 	days := []int{}
-// 	for _, day := range strings.Split(daysOnWeek[1], ",") {
-// 		if day == "-1" {
-// 			days = append(days, -1)
-// 		} else if day == "-2" {
-// 			days = append(days, -2)
-// 		} else {
-// 			dayInt, err := strconv.Atoi(day)
-// 			if err != nil || dayInt < 1 || dayInt > 31 {
-// 				return "", errors.New("неверный формат дня в правиле повторения: " + day)
-// 			}
-// 			days = append(days, dayInt)
-// 		}
-// 	}
-
-// 	months := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-// 	if len(daysOnWeek) > 2 {
-// 		months = []int{}
-// 		for _, month := range strings.Split(daysOnWeek[2], ",") {
-// 			monthInt, err := strconv.Atoi(month)
-// 			if err != nil || monthInt < 1 || monthInt > 12 {
-// 				return "", errors.New("неверный формат месяца в правиле повторения: " + month)
-// 			}
-// 			months = append(months, monthInt)
-// 		}
-// 	}
-
-// 	// Поиск следующей даты
-// 	nextDate := taskDate
-// 	for nextDate.Before(now) {
-// 		nextDate = nextDate.AddDate(0, 0, 1)
-// 	}
-
-// 	for _, day := range days {
-// 		if day == -1 {
-// 			if nextDate.Day() == daysInMonth(nextDate.Year(), nextDate.Month()) {
-// 				nextDate = nextDate.AddDate(0, 0, 1)
-// 			}
-// 		} else if day == -2 {
-// 			if nextDate.Day() == daysInMonth(nextDate.Year(), nextDate.Month())-1 {
-// 				nextDate = nextDate.AddDate(0, 0, 1)
-// 			}
-// 		} else if nextDate.Day() == day {
-// 			for _, month := range months {
-// 				if nextDate.Month() == time.Month(month) {
-
-// 					return nextDate.Format("20060102"), nil
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	return "", errors.New("не найдена следующая дата")
-// }
 
 func daysInMonth(year int, month time.Month) int {
 	return time.Date(year, month+1, 0, 0, 0, 0, 0, time.UTC).Day()

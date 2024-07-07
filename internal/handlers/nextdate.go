@@ -6,7 +6,8 @@ import (
 	"time"
 
 	"github.com/subbbbbaru/first-sample/pkg/log"
-	"github.com/subbbbbaru/go_final_project/utils"
+
+	"github.com/subbbbbaru/go_final_project/internal/nextdate"
 )
 
 func (h *Handler) NextDayHandler(w http.ResponseWriter, r *http.Request) {
@@ -21,12 +22,15 @@ func (h *Handler) NextDayHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nextDate, err := utils.NextDate(now, taskParam, repeatParam)
+	nextDate, err := nextdate.NextDate(now, taskParam, repeatParam)
 	if err != nil {
 		log.Error().Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(nextDate))
+	_, err = w.Write([]byte(nextDate))
+	if err != nil {
+		log.Error().Println(err)
+	}
 }

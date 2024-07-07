@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-
 	"net/http"
 	"strconv"
 
@@ -15,22 +14,27 @@ func (h *Handler) DoneTaskHandler(w http.ResponseWriter, r *http.Request) {
 	if len(id) == 0 {
 		log.Error().Println("wrong id")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "wrong id"})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": "wrong id"}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 	taskId, err := strconv.Atoi(id)
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 
-	_, err = h.services.TodoTask.Done(taskId)
-	if err != nil {
-		log.Error().Println(err)
+	if errDone := h.services.Done(taskId); errDone != nil {
+		log.Error().Println(errDone)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": errDone.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 
@@ -40,7 +44,9 @@ func (h *Handler) DoneTaskHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 }

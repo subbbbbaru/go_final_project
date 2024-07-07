@@ -5,13 +5,16 @@ import (
 	"net/http"
 
 	"github.com/subbbbbaru/first-sample/pkg/log"
+
 	"github.com/subbbbbaru/go_final_project/internal/models"
 )
 
 func (h *Handler) GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "method not yet realized"})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": "method not yet realized"}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 	search := r.URL.Query().Get("search")
@@ -20,7 +23,9 @@ func (h *Handler) GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 	response := struct {
@@ -33,7 +38,9 @@ func (h *Handler) GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
+			log.Error().Println(errJson)
+		}
 		return
 	}
 }

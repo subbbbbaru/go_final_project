@@ -2,12 +2,10 @@ package repository
 
 import (
 	"database/sql"
-
 	"os"
 	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
-
 	"github.com/subbbbbaru/first-sample/pkg/log"
 )
 
