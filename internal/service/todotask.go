@@ -65,19 +65,19 @@ func (todoService *TodoItemService) GetTaskById(taskId int) (models.Task, error)
 }
 
 func (todoService *TodoItemService) Update(task models.Task) (models.Task, error) {
-	if task.ID == "" {
+	if strings.TrimSpace(task.ID) == "" {
 		log.Error().Println("task ID not found")
 		return models.Task{}, errors.New("task title not found")
 	}
 
-	if task.Title == "" {
+	if strings.TrimSpace(task.Title) == "" {
 		log.Error().Println("task title not found")
 		return models.Task{}, errors.New("task title not found")
 	}
 
 	timeNow := time.Now().Truncate(24 * time.Hour).UTC()
 
-	if task.Date == "" {
+	if strings.TrimSpace(task.Date) == "" {
 		task.Date = timeNow.Format(taskDateLayout)
 	}
 
@@ -103,6 +103,9 @@ func (todoService *TodoItemService) Update(task models.Task) (models.Task, error
 }
 
 func (todoService *TodoItemService) Delete(taskId int) error {
+	if _, errId := todoService.GetTaskById(taskId); errId != nil {
+		return errId
+	}
 	_, err := todoService.repo.Delete(taskId)
 	return err
 }

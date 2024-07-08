@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/subbbbbaru/go_final_project/internal/models"
@@ -67,10 +68,18 @@ func (todo *TodoTaskSQLite) GetTaskById(taskId int) (models.Task, error) {
 }
 
 func (todo *TodoTaskSQLite) Update(task models.Task) (models.Task, error) {
+	id, err := strconv.Atoi(task.ID)
+	if err != nil {
+		return models.Task{}, err
+	}
+
+	if _, errId := todo.GetTaskById(id); errId != nil {
+		return models.Task{}, errId
+	}
 
 	query := fmt.Sprintf("UPDATE %s SET title = ?, date = ?, Comment = ?, repeat = ? WHERE id = ?", todoTaskTable)
 
-	_, err := todo.db.Exec(query, task.Title, task.Date, task.Comment, task.Repeat, task.ID)
+	_, err = todo.db.Exec(query, task.Title, task.Date, task.Comment, task.Repeat, task.ID)
 	if err != nil {
 		return models.Task{}, err
 	}
@@ -80,10 +89,13 @@ func (todo *TodoTaskSQLite) Update(task models.Task) (models.Task, error) {
 
 func (todo *TodoTaskSQLite) Delete(taskId int) (models.Task, error) {
 
+	if _, errId := todo.GetTaskById(taskId); errId != nil {
+		return models.Task{}, errId
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = ?", todoTaskTable)
 
-	_, err := todo.db.Exec(query, taskId)
-	if err != nil {
+	if _, err := todo.db.Exec(query, taskId); err != nil {
 		return models.Task{}, err
 	}
 

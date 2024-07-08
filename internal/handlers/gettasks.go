@@ -19,7 +19,7 @@ func (h *Handler) GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	search := r.URL.Query().Get("search")
 
-	tasks, err := h.services.TodoTask.GetTasks(search)
+	tasks, err := h.services.GetTasks(search)
 	if err != nil {
 		log.Error().Println(err)
 		w.WriteHeader(http.StatusInternalServerError)

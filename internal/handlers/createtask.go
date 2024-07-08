@@ -22,7 +22,7 @@ func (h *Handler) CrateTaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := h.services.TodoTask.Create(task)
+	id, err := h.services.Create(task)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		if errJson := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); errJson != nil {
