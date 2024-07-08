@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 	"time"
 
@@ -97,6 +98,14 @@ func (todoService *TodoItemService) Update(task models.Task) (models.Task, error
 				return models.Task{}, err
 			}
 		}
+	}
+	id, err := strconv.Atoi(task.ID)
+	if err != nil {
+		return models.Task{}, err
+	}
+
+	if _, errId := todoService.GetTaskById(id); errId != nil {
+		return models.Task{}, errId
 	}
 
 	return todoService.repo.Update(task)
